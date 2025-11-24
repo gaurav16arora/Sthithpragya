@@ -2,7 +2,7 @@
 
 > Ancient wisdom from the Bhagavad Gita applied to modern life challenges
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://yourusername.github.io/sthithpragya/)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://gaurav16arora.github.io/sthithpragya/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 📖 About
@@ -27,7 +27,7 @@
 
 ### Option 1: Use Online (Easiest)
 
-Visit: **[https://yourusername.github.io/sthithpragya/](https://yourusername.github.io/sthithpragya/)**
+Visit: **[https://gaurav16arora.github.io/sthithpragya/](https://gaurav16arora.github.io/sthithpragya/)**
 
 **Add to Home Screen:**
 - **iOS Safari:** Share button → "Add to Home Screen"
