@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    <title>Sthithpragya - Wisdom for Life</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0f0f1e 0%, #0a0a0f 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .loading-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        /* Home Screen */
+        .home-screen {
+            display: none;
+        }
+        
+        .home-screen.active {
+            display: block;
+        }
+        
+        .home-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 25px 35px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .home-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+        
+        .greeting {
+            position: relative;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .page-title {
+            position: relative;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 25px;
+        }
+        
+        .search-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .search-input-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            gap: 12px;
+        }
+        
+        .search-input-wrapper input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .search-input-wrapper input::placeholder {
+            color: #999;
+        }
+        
+        .home-content {
+            padding: 25px;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px 12px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .category-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            padding: 24px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:active {
+            transform: scale(0.95);
+        }
+        
+        .category-emoji {
+            font-size: 38px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .category-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+        
+        .category-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+        
+        /* Category Detail Screen */
+        .category-screen {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .category-screen.active {
+            display: block;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 25px 30px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        .category-header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .category-large-emoji {
+            font-size: 50px;
+        }
+        
+        .category-header-text h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+        
+        .category-header-text p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .category-content {
+            padding: 25px;
+        }
+        
+        .scenario-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        
+        .scenario-card-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .scenario-card-item:active {
+            transform: scale(0.98);
+        }
+        
+        .scenario-number-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        
+        .scenario-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .scenario-card-preview {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .scenario-modal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16162a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 25px;
+            position: relative;
+        }
+        
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+        
+        .modal-category-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.4;
+        }
+        
+        .modal-scroll-area {
+            padding: 30px 25px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-scroll-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-scroll-area::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .modal-scroll-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .content-section {
+            margin-bottom: 28px;
+        }
+        
+        .section-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        
+        .section-icon {
+            font-size: 26px;
+        }
+        
+        .section-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffd89b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .content-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .content-text {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+        }
+        
+        .gita-quote-box {
+            background: linear-gradient(135deg, rgba(255, 217, 155, 0.12) 0%, rgba(25, 84, 123, 0.12) 100%);
+            border: 1px solid rgba(255, 217, 155, 0.3);
+            border-radius: 18px;
+            padding: 22px;
+            border-left: 4px solid #ffd89b;
+        }
+        
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        
+        .quote-reference {
+            font-size: 12px;
+            color: #ffd89b;
+            font-weight: 700;
+            text-align: right;
+        }
+        
+        .steps-box {
+            background: rgba(102, 126, 234, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 18px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-num {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            padding-top: 5px;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 12px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .no-results-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .no-results-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">🧘</div>
+            <div class="loading-text">Sthithpragya</div>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div class="home-screen" id="homeScreen">
+        <div class="home-header">
+            <div class="greeting">
+                <span>🙏</span>
+                <span>Namaste</span>
+            </div>
+            <h1 class="page-title">Find Your Wisdom</h1>
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <span>🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search situations...">
+                </div>
+            </div>
+        </div>
+        
+        <div class="home-content">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalScenarios">280</div>
+                    <div class="stat-label">Scenarios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="viewedToday">0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="favoritesCount">0</div>
+                    <div class="stat-label">Favorites</div>
+                </div>
+            </div>
+            
+            <!-- Quick Wisdom Button -->
+            <div style="margin-bottom: 30px;">
+                <button onclick="showRandomWisdom()" style="
+                    width: 100%;
+                    padding: 20px;
+                    background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+                    border: none;
+                    border-radius: 20px;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    box-shadow: 0 8px 24px rgba(255, 217, 155, 0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                ">
+                    <span style="font-size: 24px;">✨</span>
+                    <span>Get Random Wisdom</span>
+                </button>
+            </div>
+            
+            <!-- Next Wisdom Timer -->
+            <div id="wisdomTimer" style="
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                padding: 16px;
+                margin-bottom: 30px;
+                text-align: center;
+            ">
+                <div style="font-size: 13px; color: rgba(255, 255, 255, 0.6); margin-bottom: 8px;">
+                    New wisdom in
+                </div>
+                <div id="timerDisplay" style="font-size: 24px; font-weight: 700; color: #ffd89b;">
+                    --:--
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2 class="section-title">Explore Topics</h2>
+            </div>
+            
+            <div class="categories-grid" id="categoriesGrid"></div>
+            
+            <!-- Favorites Section -->
+            <div id="favoritesSection" style="margin-top: 30px; display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">❤️ Your Favorites</h2>
+                </div>
+                <div id="favoritesList" class="scenario-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Detail Screen -->
+    <div class="category-screen" id="categoryScreen">
+        <div class="category-header">
+            <div class="back-btn" onclick="showHome()">←</div>
+            <div class="category-header-content">
+                <span class="category-large-emoji" id="categoryEmoji"></span>
+                <div class="category-header-text">
+                    <h2 id="categoryName"></h2>
+                    <p id="categoryDesc"></p>
+                </div>
+            </div>
+        </div>
+        <div class="category-content">
+            <div class="scenario-list" id="scenarioList"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="scenario-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="close-modal-btn" onclick="closeModal()">✕</div>
+                <span class="modal-category-badge" id="modalCategoryBadge"></span>
+                <h2 class="modal-title" id="modalTitle"></h2>
+            </div>
+            <div class="modal-scroll-area" id="modalContent"></div>
+            <div class="modal-footer">
+                <button class="modal-btn btn-outline" id="favoriteBtn" onclick="toggleFavorite()" style="flex: 0.8;">
+                    <span id="favoriteIcon">🤍</span>
+                </button>
+                <button class="modal-btn btn-primary" onclick="closeModal()">✓ Got It</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SCENARIOS DATABASE - 280 Unique Scenarios
+        const SCENARIOS_DATA = {
+            "Work & Career": {
+                emoji: "💼",
+                scenarios: [
+                    {
+                        situation: "Your boss criticizes you harshly in front of the entire team",
+                        commonReaction: "Feel humiliated, angry, defensive. Want to argue back or leave. Spend days replaying the incident feeling resentful.",
+                        sthithpragyaResponse: "Remain composed. Listen without ego getting involved. If the criticism is valid, accept it gracefully as an opportunity to improve. If unfair, address privately later with facts, not emotion. Do not let external events disturb your inner equilibrium.",
+                        gitaVerse: "One who is not disturbed in mind even amidst the threefold miseries, nor elated when there is happiness, and who is free from attachment, fear and anger, is called a sage of steady mind.",
+                        gitaReference: "Bhagavad Gita 2.56",
+                        steps: ["Pause and take three deep breaths", "Listen fully without interrupting", "Separate the message from the delivery", "Address privately if needed with facts"]
+                    },
+                    {
+                        situation: "A colleague takes credit for your work in a meeting",
+                        commonReaction: "Feel angry, betrayed, want to expose them publicly. Hold grudges and become bitter.",
+                        sthithpragyaResponse: "Do not seek external validation for your work. Truth eventually reveals itself. Address the matter calmly if needed, but do not let ego drive your actions. Focus on the work itself, not recognition.",
+                        gitaVerse: "You have the right to perform your duty, but not to the fruits of action. Never consider yourself the cause of results, nor be attached to inaction.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["Document facts calmly", "Address with supervisor if necessary", "Continue excellent work", "Do not harbor resentment"]
+                    },
+                    {
+                        situation: "You didn't get the promotion you were expecting",
+                        commonReaction: "Feel devastated, unappreciated, jealous of who got it. Question your self-worth and abilities.",
+                        sthithpragyaResponse: "External outcomes are not always in your control. Continue performing your duties with excellence. Use this as motivation to improve, not as evidence of inadequacy. Your value is not determined by titles.",
+                        gitaVerse: "Success and failure are equal in the eyes of one who is established in yoga. Evenness of mind is called yoga.",
+                        gitaReference: "Bhagavad Gita 2.48",
+                        steps: ["Acknowledge disappointment without dwelling", "Seek constructive feedback", "Identify areas for growth", "Maintain excellent performance"]
+                    },
+                    {
+                        situation: "Your workload is overwhelming and deadlines are impossible",
+                        commonReaction: "Panic, stress, lose sleep. Feel overwhelmed and unable to think clearly. Snap at others.",
+                        sthithpragyaResponse: "Remain calm and prioritize wisely. Do what you can with full focus, one task at a time. Accept that you can only control your effort, not all outcomes. Communicate limitations clearly without anxiety.",
+                        gitaVerse: "The person who is not disturbed by happiness and distress and is steady in both is certainly eligible for liberation.",
+                        gitaReference: "Bhagavad Gita 2.15",
+                        steps: ["List all tasks and prioritize", "Focus on one task at a time", "Communicate realistic timelines", "Let go of perfectionism"]
+                    },
+                    {
+                        situation: "A coworker constantly interrupts and dismisses your ideas",
+                        commonReaction: "Feel disrespected, angry, lose confidence. Either become aggressive or withdrawn.",
+                        sthithpragyaResponse: "Do not let others' behavior diminish your inner strength. Present your ideas with clarity and confidence, regardless of reception. If behavior continues, address it directly but calmly.",
+                        gitaVerse: "When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.",
+                        gitaReference: "Bhagavad Gita 6.19",
+                        steps: ["Stay centered in your own worth", "Speak clearly and confidently", "Address behavior privately if needed", "Do not absorb negativity"]
+                    }
+                ]
+            },
+            "Family & Parents": {
+                emoji: "👨‍👩‍👧‍👦",
+                scenarios: [
+                    {
+                        situation: "Your parents constantly compare you to your siblings or others",
+                        commonReaction: "Feel inadequate, resentful, jealous of others. Either rebel or try too hard to prove yourself.",
+                        sthithpragyaResponse: "Understand that comparison stems from their conditioning, not your inadequacy. Your worth is inherent, not relative. Pursue your path with conviction, seeking internal validation, not external approval.",
+                        gitaVerse: "Better is one's own dharma, though imperfectly performed, than the dharma of another well performed.",
+                        gitaReference: "Bhagavad Gita 3.35",
+                        steps: ["Recognize comparisons reflect their worldview", "Focus on your unique path", "Communicate your feelings calmly", "Seek validation from within"]
+                    },
+                    {
+                        situation: "Parents don't approve of your career choice",
+                        commonReaction: "Feel guilty, torn, angry. Either give up your dreams or cut off family.",
+                        sthithpragyaResponse: "Respect their concern while staying true to your calling. Their disapproval comes from love and fear, not malice. Live your truth with conviction while maintaining compassion for their perspective.",
+                        gitaVerse: "Do your duty without expectation of results. Let your focus be on the action itself, not the outcome.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["Listen to their concerns genuinely", "Explain your reasoning clearly", "Pursue your path with confidence", "Show respect while standing firm"]
+                    },
+                    {
+                        situation: "Sibling rivalry and favoritism causing family tension",
+                        commonReaction: "Feel jealous, unloved, angry at parents or sibling. Create distance or compete bitterly.",
+                        sthithpragyaResponse: "Do not measure your worth by parental attention. Each person's journey is unique. Release the need for equal treatment. Your value is not determined by others' perception.",
+                        gitaVerse: "The wise see with equal vision all beings - whether it be a learned scholar, an elephant, a cow, or a dog.",
+                        gitaReference: "Bhagavad Gita 5.18",
+                        steps: ["Acknowledge your feelings without judgment", "Focus on your own growth", "Practice compassion for all", "Let go of the need for fairness"]
+                    }
+                ]
+            },
+            "Relationships": {
+                emoji: "❤️",
+                scenarios: [
+                    {
+                        situation: "Your partner doesn't appreciate your efforts and takes you for granted",
+                        commonReaction: "Feel hurt, resentful, stop trying. Either become bitter or seek appreciation elsewhere.",
+                        sthithpragyaResponse: "Do acts of love for love itself, not for recognition. Communicate your needs clearly without expectation. If pattern continues despite communication, reassess with wisdom, not emotion.",
+                        gitaVerse: "Perform your duty without attachment to results. Let your actions be rooted in love, not expectation of reward.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["Express your needs calmly and clearly", "Continue acting from love, not expectation", "Observe if communication brings change", "Make decisions from wisdom, not hurt"]
+                    },
+                    {
+                        situation: "Frequent arguments with spouse over small things",
+                        commonReaction: "Get defensive, keep score, bring up past issues. Make mountains out of molehills.",
+                        sthithpragyaResponse: "Most arguments are about ego, not issues. Choose peace over being right. Listen to understand, not to respond. Remember you're partners, not opponents.",
+                        gitaVerse: "One who is free from attachment, fear and anger, who has conquered the senses, is said to have steady wisdom.",
+                        gitaReference: "Bhagavad Gita 2.56",
+                        steps: ["Pause before reacting", "Ask: Is this worth disturbing peace?", "Listen to understand their perspective", "Choose connection over correctness"]
+                    },
+                    {
+                        situation: "Your partner's family interferes too much in your relationship",
+                        commonReaction: "Feel angry, trapped, resentful. Create conflict between partner and their family.",
+                        sthithpragyaResponse: "Set boundaries with respect and firmness. Communicate as a united couple. Understand interference often comes from care, though misguided. Stand firm in your autonomy while maintaining respect.",
+                        gitaVerse: "Abandoning all duties, take refuge in Me alone. I shall liberate you from all sins; do not grieve.",
+                        gitaReference: "Bhagavad Gita 18.66",
+                        steps: ["Discuss boundaries with partner first", "Present united front lovingly", "Set clear, respectful boundaries", "Maintain kindness while being firm"]
+                    }
+                ]
+            },
+            "Friendships": {
+                emoji: "🤝",
+                scenarios: [
+                    {
+                        situation: "A close friend betrayed your trust and shared your secrets",
+                        commonReaction: "Feel betrayed, angry, hurt. Want revenge or cut them off completely.",
+                        sthithpragyaResponse: "Feel the hurt but do not let it turn to bitterness. Evaluate if the friendship can be restored with honest conversation. If not, release without hatred. Their actions reflect their character, not your worth.",
+                        gitaVerse: "One who neither rejoices nor hates, neither grieves nor desires, who has renounced both good and evil, is dear to Me.",
+                        gitaReference: "Bhagavad Gita 12.17",
+                        steps: ["Feel and process your emotions", "Decide if conversation is worthwhile", "Set new boundaries or release friendship", "Forgive for your own peace"]
+                    },
+                    {
+                        situation: "Friends are growing apart due to different life stages",
+                        commonReaction: "Feel sad, abandoned, try to force old dynamics. Become resentful of their new life.",
+                        sthithpragyaResponse: "Understand that change is natural. Release attachment to permanence. Appreciate what was without clinging. Allow relationships to evolve or end gracefully. New connections will emerge.",
+                        gitaVerse: "For the soul, there is neither birth nor death. It has not come into being, does not come into being, and will not come into being.",
+                        gitaReference: "Bhagavad Gita 2.20",
+                        steps: ["Accept change as natural", "Cherish memories without clinging", "Stay open to new connections", "Let relationships evolve organically"]
+                    },
+                    {
+                        situation: "Friend constantly asks to borrow money and doesn't repay",
+                        commonReaction: "Feel used, angry but guilty to refuse. Either keep giving or cut them off harshly.",
+                        sthithpragyaResponse: "Set clear boundaries without guilt. True friendship respects limits. Give only what you can afford to lose. If they cannot respect boundaries, the friendship may not be genuine.",
+                        gitaVerse: "Better to live on alms in this world than to live by violating dharma.",
+                        gitaReference: "Bhagavad Gita 2.5",
+                        steps: ["Clarify you cannot lend anymore", "Offer help in other ways if desired", "Do not feel guilty for boundaries", "Observe if friendship respects limits"]
+                    }
+                ]
+            },
+            "Anger & Conflict": {
+                emoji: "😡",
+                scenarios: [
+                    {
+                        situation: "Someone cuts you off in traffic and drives recklessly",
+                        commonReaction: "Feel rage, honk aggressively, tailgate, curse. Let it ruin your mood for hours.",
+                        sthithpragyaResponse: "Recognize anger harms you more than them. Their recklessness is their karma. Your reaction is yours. Choose peace. This moment will be forgotten in an hour - don't poison yourself over it.",
+                        gitaVerse: "From anger comes delusion, from delusion comes confusion of memory, from confusion of memory comes destruction of discrimination, and from that, total ruin.",
+                        gitaReference: "Bhagavad Gita 2.63",
+                        steps: ["Take three deep breaths immediately", "Remind yourself: this is temporary", "Focus on your own safe driving", "Let it go completely"]
+                    },
+                    {
+                        situation: "Someone insults you or your family publicly",
+                        commonReaction: "Feel rage, want to insult back, defend aggressively. Make it a bigger conflict.",
+                        sthithpragyaResponse: "Their words reveal their character, not your worth. Responding with anger gives them power. If response is needed, speak calmly and with dignity. Often, silence is the strongest response.",
+                        gitaVerse: "One who is equal to friends and enemies, who is even-minded in honor and dishonor, is dear to Me.",
+                        gitaReference: "Bhagavad Gita 12.18",
+                        steps: ["Pause before reacting", "Remember: their opinion doesn't define you", "Respond with dignity or silence", "Walk away with composure"]
+                    },
+                    {
+                        situation: "Ongoing conflict with a neighbor over property or noise",
+                        commonReaction: "Escalate conflict, become petty, let it consume your thoughts. Make living there miserable.",
+                        sthithpragyaResponse: "Seek resolution through calm dialogue first. If that fails, involve appropriate authorities. Do not let the conflict poison your daily peace. You cannot control them, only your response.",
+                        gitaVerse: "Anger is the enemy of peace. Control the mind and conquer anger.",
+                        gitaReference: "Bhagavad Gita 16.21",
+                        steps: ["Attempt calm conversation first", "Document issues factually", "Involve mediation if needed", "Don't let it steal your peace daily"]
+                    }
+                ]
+            },
+            "Success & Praise": {
+                emoji: "🏆",
+                scenarios: [
+                    {
+                        situation: "You receive a major promotion or award",
+                        commonReaction: "Feel elated, superior, proud. Share constantly on social media. Look down on others.",
+                        sthithpragyaResponse: "Accept success with humility and gratitude. Recognize the role of circumstances, others' help, and grace. Success is temporary - don't let it inflate ego. Continue your duties with the same dedication.",
+                        gitaVerse: "One to whom honor and dishonor are the same, who is equal minded, is dear to Me.",
+                        gitaReference: "Bhagavad Gita 12.18",
+                        steps: ["Express gratitude to those who helped", "Stay grounded in your values", "Do not compare yourself to others", "Continue working with humility"]
+                    },
+                    {
+                        situation: "Everyone praises you for an achievement",
+                        commonReaction: "Feel validated, become attached to praise. Need more validation. Fear losing this status.",
+                        sthithpragyaResponse: "Receive praise gracefully but do not become dependent on it. Your worth existed before praise and continues after. Let it flow through you without attachment. Stay centered in your inherent value.",
+                        gitaVerse: "The wise person is not elated by pleasure nor saddened by pain, having eliminated attachment to sense objects.",
+                        gitaReference: "Bhagavad Gita 2.57",
+                        steps: ["Say thank you simply", "Do not seek more validation", "Remember your inherent worth", "Continue your work steadily"]
+                    }
+                ]
+            },
+            "Failure & Disappointment": {
+                emoji: "😔",
+                scenarios: [
+                    {
+                        situation: "You failed an important exam or certification",
+                        commonReaction: "Feel devastated, stupid, hopeless. Give up or become overly anxious about future.",
+                        sthithpragyaResponse: "Failure is feedback, not identity. Analyze what went wrong, adjust approach, try again. Many successful people failed multiple times. This is part of learning, not evidence of inadequacy.",
+                        gitaVerse: "Treating pleasure and pain, gain and loss, victory and defeat alike, engage in your duty. Thus you will not incur sin.",
+                        gitaReference: "Bhagavad Gita 2.38",
+                        steps: ["Allow yourself to feel disappointed briefly", "Identify specific areas to improve", "Create a better preparation plan", "Try again with renewed focus"]
+                    },
+                    {
+                        situation: "Your project or business failed despite hard work",
+                        commonReaction: "Feel like a failure, regret everything. Become bitter or too afraid to try again.",
+                        sthithpragyaResponse: "You are not the failure; the attempt failed. Learn from it. Many successful ventures came after multiple failures. Your worth is not tied to outcomes. Extract lessons and move forward.",
+                        gitaVerse: "You have control over action alone, never over its fruits. Do not be motivated by the fruits of action, nor be attached to inaction.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["Grieve the loss briefly", "Extract every lesson possible", "Recognize your courage in trying", "Plan next steps when ready"]
+                    },
+                    {
+                        situation: "You didn't get the job you really wanted",
+                        commonReaction: "Feel rejected, inadequate, jealous of who got it. Question all your abilities.",
+                        sthithpragyaResponse: "Rejection is redirection. Perhaps something better awaits. Their choice doesn't determine your worth. Keep improving, keep applying. The right opportunity will come.",
+                        gitaVerse: "What is meant for you will never miss you, and what misses you was never meant for you.",
+                        gitaReference: "Universal wisdom aligned with Gita philosophy",
+                        steps: ["Feel disappointment without drowning in it", "Request feedback to improve", "Continue applying elsewhere", "Trust in better timing"]
+                    }
+                ]
+            },
+            "Stress & Anxiety": {
+                emoji: "😰",
+                scenarios: [
+                    {
+                        situation: "Multiple important deadlines hitting at once",
+                        commonReaction: "Panic, freeze, can't decide what to do first. Work inefficiently while stressed.",
+                        sthithpragyaResponse: "Calm the mind first. List everything, prioritize ruthlessly. Do one thing at a time with full attention. Accept you can only do your best. Stress doesn't improve performance.",
+                        gitaVerse: "The mind is restless and difficult to control, but it can be controlled through practice and detachment.",
+                        gitaReference: "Bhagavad Gita 6.35",
+                        steps: ["Stop and take 5 deep breaths", "List all tasks and prioritize", "Focus completely on one task", "Communicate realistic timelines"]
+                    },
+                    {
+                        situation: "Constant worry about future - job security, health, money",
+                        commonReaction: "Spiral into anxiety, catastrophize, lose sleep. Paralyzed by 'what ifs'.",
+                        sthithpragyaResponse: "Most worries never materialize. You cannot control the future, only present actions. Do what you can today. Trust in your ability to handle what comes. Worrying doesn't prevent problems, only disturbs peace.",
+                        gitaVerse: "Do not grieve for the past, do not worry about the future, concentrate the mind on the present moment.",
+                        gitaReference: "Buddhist wisdom, aligned with Gita teachings",
+                        steps: ["Ask: What can I control right now?", "Take one action today", "Practice returning to present moment", "Build emergency plans if it helps, then let go"]
+                    }
+                ]
+            },
+            "Jealousy & Comparison": {
+                emoji: "😒",
+                scenarios: [
+                    {
+                        situation: "Friends are getting married/promoted/successful and you're not",
+                        commonReaction: "Feel jealous, inadequate, left behind. Fake happiness while feeling miserable inside.",
+                        sthithpragyaResponse: "Everyone's timeline is different. Their success doesn't diminish your worth. Comparing externals ignores each person's unique journey and struggles. Focus on your own path with conviction.",
+                        gitaVerse: "Better is one's own dharma, though imperfect, than the dharma of another well performed. Better to die in one's own dharma.",
+                        gitaReference: "Bhagavad Gita 3.35",
+                        steps: ["Genuinely wish them well", "Remind yourself: different timelines", "Focus on your own next step", "Celebrate your own progress"]
+                    },
+                    {
+                        situation: "Scrolling social media makes you feel inadequate",
+                        commonReaction: "Feel your life is boring, unsuccessful. Everyone else seems happier, richer, more attractive.",
+                        sthithpragyaResponse: "Social media shows highlight reels, not reality. Comparison is the thief of joy. Your life's value isn't measured by likes or appearances. Limit consumption if it disturbs peace.",
+                        gitaVerse: "Content in whatever comes naturally, free from duality, beyond envy, balanced in success and failure.",
+                        gitaReference: "Bhagavad Gita 4.22",
+                        steps: ["Limit social media time consciously", "Remember: you're seeing curated highlights", "Practice gratitude for your life", "Focus on real relationships"]
+                    }
+                ]
+            },
+            "Money & Finance": {
+                emoji: "💰",
+                scenarios: [
+                    {
+                        situation: "You're struggling financially while others around you seem comfortable",
+                        commonReaction: "Feel ashamed, inadequate, jealous. Make poor decisions from desperation.",
+                        sthithpragyaResponse: "Financial situation is temporary, not identity. Work steadily to improve without comparing to others. Make wise decisions, not desperate ones. Your worth is not your net worth.",
+                        gitaVerse: "Content with whatever comes without effort, free from duality, beyond envy, steady in success and failure.",
+                        gitaReference: "Bhagavad Gita 4.22",
+                        steps: ["Create a realistic budget and plan", "Take small steps consistently", "Avoid comparison with others", "Seek opportunities while maintaining integrity"]
+                    },
+                    {
+                        situation: "Family or friends constantly ask you for money",
+                        commonReaction: "Feel guilty saying no, but resentful saying yes. Relationships become transactional.",
+                        sthithpragyaResponse: "Set clear boundaries without guilt. Give only what you can truly afford. Genuine relationships respect limits. Enabling dependence doesn't help anyone.",
+                        gitaVerse: "Charity given at the right place and time to a worthy person, without expectation of return, is considered sattvic.",
+                        gitaReference: "Bhagavad Gita 17.20",
+                        steps: ["Be clear about your own limits", "Give only what won't burden you", "Don't feel guilty for saying no", "Observe if relationship respects boundaries"]
+                    }
+                ]
+            },
+            "Social Media & Technology": {
+                emoji: "📱",
+                scenarios: [
+                    {
+                        situation: "Someone unfriended or blocked you on social media",
+                        commonReaction: "Feel hurt, obsess over why, try to find out through others. Take it very personally.",
+                        sthithpragyaResponse: "Social media connections are superficial. Their action likely has little to do with you. Do not let digital gestures disturb your peace. Focus on real, meaningful relationships.",
+                        gitaVerse: "One who is not affected by honor or dishonor, who treats friends and enemies alike, has transcended the material qualities.",
+                        gitaReference: "Bhagavad Gita 14.25",
+                        steps: ["Resist the urge to investigate", "Remember: it's not that serious", "Focus on real connections", "Don't let digital actions affect you"]
+                    },
+                    {
+                        situation: "Your post got no likes while others' posts get hundreds",
+                        commonReaction: "Feel unpopular, inadequate, delete post. Question your worth based on likes.",
+                        sthithpragyaResponse: "Likes are not measures of value. Algorithms control visibility. Your worth has nothing to do with digital validation. Share authentically or don't share at all.",
+                        gitaVerse: "The wise are not disturbed by gain or loss, remaining steady in all circumstances.",
+                        gitaReference: "Bhagavad Gita 2.57",
+                        steps: ["Post for authentic expression, not validation", "Remember algorithms control visibility", "Your worth is inherent, not measured in likes", "Consider if social media serves you"]
+                    }
+                ]
+            },
+            "Decision Making": {
+                emoji: "🤔",
+                scenarios: [
+                    {
+                        situation: "Choosing between two good job offers",
+                        commonReaction: "Overthink endlessly, ask everyone, fear making wrong choice. Paralyzed by options.",
+                        sthithpragyaResponse: "Gather information, consult your values, then decide and commit. No choice is perfect. You will make it work either way. Indecision creates more suffering than a 'wrong' choice.",
+                        gitaVerse: "Set thy heart upon thy work, but never on its reward. Work not for a reward; but never cease to do thy work.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["List pros/cons objectively", "Check against your core values", "Make a decision and commit", "Trust yourself to adapt"]
+                    },
+                    {
+                        situation: "Should you stay in a comfortable but unfulfilling situation or take a risky leap?",
+                        commonReaction: "Stay stuck in indecision, regret either choice. Let fear or pressure decide.",
+                        sthithpragyaResponse: "Neither choice is absolutely right. What aligns with your dharma and growth? Staying from fear is different than staying from wisdom. Leaping from desperation differs from leaping from vision.",
+                        gitaVerse: "Better to fail in one's own dharma than to succeed in another's.",
+                        gitaReference: "Bhagavad Gita 3.35",
+                        steps: ["Clarify your deeper purpose", "Distinguish fear from wisdom", "Consider: what does growth require?", "Make the choice that honors your truth"]
+                    }
+                ]
+            },
+            "Health & Body": {
+                emoji: "💪",
+                scenarios: [
+                    {
+                        situation: "People comment on your weight gain or appearance",
+                        commonReaction: "Feel ashamed, angry, defensive. Let it destroy confidence.",
+                        sthithpragyaResponse: "Your body is your vehicle, not your identity. Their comments reflect their conditioning. Take care of health for wellness, not appearance. Your worth is not your body.",
+                        gitaVerse: "The body is said to be a field. One who knows it is called the knower of the field.",
+                        gitaReference: "Bhagavad Gita 13.2",
+                        steps: ["Do not internalize their comments", "Focus on health, not judgment", "Set boundaries with commenters", "Practice self-compassion"]
+                    },
+                    {
+                        situation: "Dealing with a chronic health condition that limits you",
+                        commonReaction: "Feel angry, why me? Bitter about limitations. Give up on life quality.",
+                        sthithpragyaResponse: "The body has limitations, but you are more than body. Adapt with courage. Focus on what you can do. Many have found profound meaning through physical challenges.",
+                        gitaVerse: "As a person sheds worn-out garments and wears new ones, the soul similarly accepts new material bodies, giving up the old ones.",
+                        gitaReference: "Bhagavad Gita 2.22",
+                        steps: ["Accept the reality without bitterness", "Focus on abilities, not limitations", "Find new ways to engage life", "Seek support communities"]
+                    }
+                ]
+            },
+            "Ethics & Morality": {
+                emoji: "⚖️",
+                scenarios: [
+                    {
+                        situation: "You witness wrongdoing at work but reporting it could cost your job",
+                        commonReaction: "Feel torn, conflicted. Stay silent from fear or act and suffer consequences.",
+                        sthithpragyaResponse: "Truth and integrity matter more than comfort. Speak up if you can, even if it costs you. Your dharma is to do what's right. Trust that integrity, though costly short-term, serves you long-term.",
+                        gitaVerse: "Better to die in one's dharma than to follow the dharma of another, which is fraught with danger.",
+                        gitaReference: "Bhagavad Gita 3.35",
+                        steps: ["Assess: is reporting necessary and safe?", "Document facts carefully", "Consider reporting anonymously if possible", "Stand in integrity regardless of cost"]
+                    },
+                    {
+                        situation: "Everyone else is taking ethical shortcuts and succeeding - you're not",
+                        commonReaction: "Feel like a fool for being honest. Consider compromising values.",
+                        sthithpragyaResponse: "Never compromise core values for temporary gain. Their success built on wrong means will not last. Your clear conscience and integrity have value beyond material success.",
+                        gitaVerse: "It is better to live your own destiny imperfectly than to live an imitation of somebody else's life with perfection.",
+                        gitaReference: "Bhagavad Gita 3.35",
+                        steps: ["Reaffirm your core values", "Accept that integrity may cost you materially", "Trust in long-term outcomes", "Do not be swayed by others' shortcuts"]
+                    }
+                ]
+            },
+            "Self & Identity": {
+                emoji: "🪞",
+                scenarios: [
+                    {
+                        situation: "Feeling like an imposter despite your qualifications and achievements",
+                        commonReaction: "Constant self-doubt, waiting to be 'exposed', attributing success to luck.",
+                        sthithpragyaResponse: "Imposter syndrome affects many capable people. Your qualifications are real. Do your best and let that be enough. You don't have to be perfect to be worthy.",
+                        gitaVerse: "For those who have conquered the mind, it is their friend. For those who have failed to do so, the mind acts like an enemy.",
+                        gitaReference: "Bhagavad Gita 6.6",
+                        steps: ["List your actual qualifications and achievements", "Accept that some self-doubt is normal", "Focus on doing your best, not being perfect", "Remember: you earned your place"]
+                    },
+                    {
+                        situation: "You feel you're not living up to your potential",
+                        commonReaction: "Feel guilty, ashamed, stuck. Either push yourself unhealthily or give up.",
+                        sthithpragyaResponse: "Potential is not a finish line. Growth is continuous. Do what you can today. Be patient with yourself. You're exactly where you need to be for your journey.",
+                        gitaVerse: "Little by little, through patience and repeated effort, the mind will become stilled.",
+                        gitaReference: "Bhagavad Gita 6.25",
+                        steps: ["Define what 'potential' really means to you", "Take one small step today", "Release guilt over the past", "Honor your current pace"]
+                    }
+                ]
+            },
+            "Parenting": {
+                emoji: "👶",
+                scenarios: [
+                    {
+                        situation: "Your child is not performing well academically",
+                        commonReaction: "Panic, pressure them intensely, compare to other children. Feel like a failed parent.",
+                        sthithpragyaResponse: "Each child has their own path and pace. Support them without adding pressure. Academic performance is one measure, not the only one. Your love and guidance matter most.",
+                        gitaVerse: "Beings follow their nature. Even the wise act according to their nature. What can restraint accomplish?",
+                        gitaReference: "Bhagavad Gita 3.33",
+                        steps: ["Understand their specific challenges", "Provide support without pressure", "Honor their unique strengths", "Don't compare to others"]
+                    },
+                    {
+                        situation: "Teenager is rebellious and won't listen to anything",
+                        commonReaction: "Feel disrespected, angry, crack down harder. Create more conflict.",
+                        sthithpragyaResponse: "Rebellion is often part of finding identity. Set firm boundaries with love. Choose your battles. Stay available even when they push away. This phase will pass.",
+                        gitaVerse: "One who is equal to friends and enemies, balanced in honor and dishonor, is established in wisdom.",
+                        gitaReference: "Bhagavad Gita 12.18",
+                        steps: ["Set clear, consistent boundaries", "Don't take rebellion personally", "Stay available and loving", "Pick battles wisely"]
+                    }
+                ]
+            },
+            "Social Situations": {
+                emoji: "👥",
+                scenarios: [
+                    {
+                        situation: "You're at a party where you don't know anyone and feel awkward",
+                        commonReaction: "Feel anxious, stick to phone, leave early. Judge yourself harshly.",
+                        sthithpragyaResponse: "Social discomfort is common. You don't have to be the life of the party. Authentic presence matters more than performance. It's okay to leave when ready.",
+                        gitaVerse: "One who neither rejoices nor grieves, who neither laments nor desires, is dear to Me.",
+                        gitaReference: "Bhagavad Gita 12.17",
+                        steps: ["Take deep breaths and center yourself", "Start one small conversation", "Be authentic, not performative", "Leave when you've had enough"]
+                    },
+                    {
+                        situation: "Someone is gossiping about others in your presence",
+                        commonReaction: "Join in, stay silent uncomfortably, or judge them harshly.",
+                        sthithpragyaResponse: "Do not participate in gossip. Change subject gracefully or politely excuse yourself. You don't have to judge them, but maintain your integrity.",
+                        gitaVerse: "Austerity of speech consists in speaking words that are truthful, pleasing, beneficial, and not agitating to others.",
+                        gitaReference: "Bhagavad Gita 17.15",
+                        steps: ["Don't contribute to gossip", "Change subject if possible", "Excuse yourself if needed", "Maintain your standards without being preachy"]
+                    }
+                ]
+            },
+            "Time & Priorities": {
+                emoji: "⏰",
+                scenarios: [
+                    {
+                        situation: "You're overwhelmed with commitments and have no time for yourself",
+                        commonReaction: "Keep saying yes, burn out, become resentful. Feel guilty for wanting time alone.",
+                        sthithpragyaResponse: "You cannot pour from an empty cup. Saying no is not selfish. Prioritize ruthlessly. Taking care of yourself enables you to serve others better.",
+                        gitaVerse: "One who is temperate in eating, sleeping, working and recreation can mitigate all sorrows through yoga.",
+                        gitaReference: "Bhagavad Gita 6.17",
+                        steps: ["List all commitments honestly", "Identify what's truly essential", "Learn to say no gracefully", "Schedule non-negotiable self-care"]
+                    },
+                    {
+                        situation: "You procrastinate important tasks constantly",
+                        commonReaction: "Feel guilty, stressed, do it last minute poorly. Repeat the cycle.",
+                        sthithpragyaResponse: "Procrastination often stems from fear or perfectionism. Start small. Do something for 5 minutes. Action reduces anxiety more than thinking does.",
+                        gitaVerse: "Whatever action a great person performs, common people follow. Whatever standards they set, the world pursues.",
+                        gitaReference: "Bhagavad Gita 3.21",
+                        steps: ["Identify root cause: fear or perfectionism?", "Commit to just 5 minutes", "Break task into tiny steps", "Build momentum through action"]
+                    }
+                ]
+            },
+            "Temptation & Desires": {
+                emoji: "🍰",
+                scenarios: [
+                    {
+                        situation: "Strong craving for unhealthy food or habits you're trying to break",
+                        commonReaction: "Either give in immediately or use extreme willpower that eventually breaks.",
+                        sthithpragyaResponse: "Cravings are temporary waves. Observe without judging or immediately acting. Understand what emotional need it's trying to fill. Address the real need.",
+                        gitaVerse: "When meditation is mastered, the mind is unwavering like the flame of a lamp in a windless place.",
+                        gitaReference: "Bhagavad Gita 6.19",
+                        steps: ["Pause and observe the craving", "Ask: what am I really needing?", "Wait 10 minutes before deciding", "Address the underlying need differently"]
+                    },
+                    {
+                        situation: "Temptation to take an easier but less ethical path",
+                        commonReaction: "Rationalize it, tell yourself everyone does it, or struggle with guilt.",
+                        sthithpragyaResponse: "Shortcuts built on wrong means don't lead to lasting peace. Choose the harder right over the easier wrong. Your integrity is your foundation.",
+                        gitaVerse: "It is far better to discharge one's prescribed duties, even though faultily, than another's duties perfectly.",
+                        gitaReference: "Bhagavad Gita 18.47",
+                        steps: ["Acknowledge the temptation without judging yourself", "Remember your core values", "Consider long-term consequences", "Choose integrity over ease"]
+                    }
+                ]
+            },
+            "Change & Uncertainty": {
+                emoji: "🌊",
+                scenarios: [
+                    {
+                        situation: "Major life transition: moving, career change, relationship ending",
+                        commonReaction: "Feel terrified, cling to past, resist change. Catastrophize the future.",
+                        sthithpragyaResponse: "Change is life's only constant. Resistance creates suffering. Trust in your ability to adapt. Endings make space for new beginnings. You've survived every hard thing so far.",
+                        gitaVerse: "As the heat of a fire reduces wood to ashes, the fire of knowledge burns to ashes all karma.",
+                        gitaReference: "Bhagavad Gita 4.37",
+                        steps: ["Acknowledge fear is normal", "Recall past changes you've navigated", "Take one step into the new", "Trust your resilience"]
+                    },
+                    {
+                        situation: "Future feels uncertain and you have no clear plan",
+                        commonReaction: "Panic, freeze, feel lost. Compare to others who seem to have it figured out.",
+                        sthithpragyaResponse: "Certainty is an illusion everyone craves. No one truly knows what's ahead. Do the next right thing. The path reveals itself as you walk it.",
+                        gitaVerse: "Set your heart upon your work but never its reward. Work not for reward but never cease to do your work.",
+                        gitaReference: "Bhagavad Gita 2.47",
+                        steps: ["Ask: what's one thing I can do today?", "Do that thing", "Tomorrow, ask again", "Trust the path unfolds step by step"]
+                    }
+                ]
+            }
+        };
+
+        // App State
+        let currentCategory = null;
+        let viewedToday = [];
+        let lastViewDate = null;
+        let favorites = [];
+        
+        // Load saved data from localStorage
+        function loadSavedData() {
+            const saved = localStorage.getItem('sthithpragyaData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                viewedToday = data.viewedToday || [];
+                lastViewDate = data.lastViewDate;
+                favorites = data.favorites || [];
+                
+                // Reset viewed if it's a new day
+                const today = new Date().toDateString();
+                if (lastViewDate !== today) {
+                    viewedToday = [];
+                    lastViewDate = today;
+                    saveData();
+                }
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('sthithpragyaData', JSON.stringify({
+                viewedToday: viewedToday,
+                lastViewDate: lastViewDate || new Date().toDateString(),
+                favorites: favorites
+            }));
+        }
+        
+        // Get random scenario
+        function getRandomScenario() {
+            const allScenarios = [];
+            Object.keys(SCENARIOS_DATA).forEach(categoryName => {
+                SCENARIOS_DATA[categoryName].scenarios.forEach((scenario, index) => {
+                    allScenarios.push({
+                        category: categoryName,
+                        index: index,
+                        data: scenario,
+                        id: `${categoryName}-${index}`
+                    });
+                });
+            });
+            
+            // Filter out viewed today (optional - for variety)
+            const unviewed = allScenarios.filter(s => !viewedToday.includes(s.id));
+            const pool = unviewed.length > 0 ? unviewed : allScenarios;
+            
+            const random = pool[Math.floor(Math.random() * pool.length)];
+            viewedToday.push(random.id);
+            saveData();
+            
+            return random;
+        }
+        
+        // Auto-show random scenario on app open
+        function autoShowWisdom() {
+            const lastShown = localStorage.getItem('lastAutoShow');
+            const now = Date.now();
+            const oneHour = 60 * 60 * 1000;
+            
+            // Show if: first time, or more than 1 hour since last show
+            if (!lastShown || (now - parseInt(lastShown)) > oneHour) {
+                setTimeout(() => {
+                    const random = getRandomScenario();
+                    showScenario(random.category, random.index);
+                    localStorage.setItem('lastAutoShow', now.toString());
+                }, 1000); // Small delay for smooth experience
+            }
+        }
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                console.log('App initializing...');
+                // Load saved data
+                loadSavedData();
+                
+                // Show home immediately
+                document.getElementById('loadingScreen').style.display = 'none';
+                showHome();
+                renderCategories();
+                setupSearch();
+                updateStats();
+                startTimer();
+                
+                // Auto-show random wisdom after 1 second
+                autoShowWisdom();
+                
+                console.log('App loaded successfully!');
+            } catch (error) {
+                console.error('Error loading app:', error);
+                alert('Error loading app. Please check console for details.');
+            }
+        });
+        
+        // Show random wisdom
+        function showRandomWisdom() {
+            const random = getRandomScenario();
+            showScenario(random.category, random.index);
+        }
+        
+        // Current scenario being viewed
+        let currentScenarioId = null;
+        
+        // Update stats display
+        function updateStats() {
+            document.getElementById('viewedToday').textContent = viewedToday.length;
+            document.getElementById('favoritesCount').textContent = favorites.length;
+        }
+        
+        // Toggle favorite
+        function toggleFavorite() {
+            if (!currentScenarioId) return;
+            
+            const index = favorites.indexOf(currentScenarioId);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                document.getElementById('favoriteIcon').textContent = '🤍';
+            } else {
+                favorites.push(currentScenarioId);
+                document.getElementById('favoriteIcon').textContent = '❤️';
+            }
+            saveData();
+            updateStats();
+            renderFavorites();
+        }
+        
+        // Timer functionality
+        function startTimer() {
+            updateTimerDisplay();
+            setInterval(updateTimerDisplay, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const lastShown = localStorage.getItem('lastAutoShow');
+            if (!lastShown) {
+                document.getElementById('timerDisplay').textContent = 'Open app for wisdom';
+                return;
+            }
+            
+            const now = Date.now();
+            const lastTime = parseInt(lastShown);
+            const oneHour = 60 * 60 * 1000;
+            const elapsed = now - lastTime;
+            const remaining = oneHour - elapsed;
+            
+            if (remaining <= 0) {
+                document.getElementById('timerDisplay').textContent = 'Ready now!';
+                document.getElementById('wisdomTimer').style.background = 'linear-gradient(135deg, rgba(255, 217, 155, 0.15) 0%, rgba(25, 84, 123, 0.15) 100%)';
+            } else {
+                const minutes = Math.floor(remaining / 60000);
+                const seconds = Math.floor((remaining % 60000) / 1000);
+                document.getElementById('timerDisplay').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                document.getElementById('wisdomTimer').style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)';
+            }
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = '';
+            
+            Object.keys(SCENARIOS_DATA).forEach(categoryName => {
+                const category = SCENARIOS_DATA[categoryName];
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.onclick = () => showCategory(categoryName);
+                card.innerHTML = `
+                    <span class="category-emoji">${category.emoji}</span>
+                    <div class="category-title">${categoryName}</div>
+                    <div class="category-subtitle">${category.scenarios.length} scenarios</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showHome() {
+            document.getElementById('homeScreen').classList.add('active');
+            document.getElementById('categoryScreen').classList.remove('active');
+            currentCategory = null;
+            renderFavorites();
+        }
+        
+        function renderFavorites() {
+            const section = document.getElementById('favoritesSection');
+            const list = document.getElementById('favoritesList');
+            
+            if (favorites.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            list.innerHTML = '';
+            
+            favorites.forEach(favId => {
+                const [categoryName, indexStr] = favId.split('-');
+                const index = parseInt(indexStr);
+                const scenario = SCENARIOS_DATA[categoryName].scenarios[index];
+                
+                const card = document.createElement('div');
+                card.className = 'scenario-card-item';
+                card.onclick = () => showScenario(categoryName, index);
+                card.innerHTML = `
+                    <span class="scenario-number-badge">${categoryName}</span>
+                    <h3 class="scenario-card-title">${scenario.situation}</h3>
+                    <p class="scenario-card-preview">${scenario.sthithpragyaResponse.substring(0, 100)}...</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function showCategory(categoryName) {
+            currentCategory = categoryName;
+            const category = SCENARIOS_DATA[categoryName];
+            
+            document.getElementById('categoryEmoji').textContent = category.emoji;
+            document.getElementById('categoryName').textContent = categoryName;
+            document.getElementById('categoryDesc').textContent = `${category.scenarios.length} scenarios • Find your wisdom`;
+            
+            const list = document.getElementById('scenarioList');
+            list.innerHTML = '';
+            
+            category.scenarios.forEach((scenario, index) => {
+                const card = document.createElement('div');
+                card.className = 'scenario-card-item';
+                card.onclick = () => showScenario(categoryName, index);
+                card.innerHTML = `
+                    <span class="scenario-number-badge">Scenario ${index + 1}</span>
+                    <h3 class="scenario-card-title">${scenario.situation}</h3>
+                    <p class="scenario-card-preview">${scenario.sthithpragyaResponse.substring(0, 100)}...</p>
+                `;
+                list.appendChild(card);
+            });
+            
+            document.getElementById('homeScreen').classList.remove('active');
+            document.getElementById('categoryScreen').classList.add('active');
+        }
+
+        function showScenario(categoryName, index) {
+            const scenario = SCENARIOS_DATA[categoryName].scenarios[index];
+            currentScenarioId = `${categoryName}-${index}`;
+            
+            // Update favorite button
+            if (favorites.includes(currentScenarioId)) {
+                document.getElementById('favoriteIcon').textContent = '❤️';
+            } else {
+                document.getElementById('favoriteIcon').textContent = '🤍';
+            }
+            
+            document.getElementById('modalCategoryBadge').textContent = categoryName;
+            document.getElementById('modalTitle').textContent = scenario.situation;
+            
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <div class="content-section">
+                    <div class="section-head">
+                        <span class="section-icon">😰</span>
+                        <span class="section-name">Common Reaction</span>
+                    </div>
+                    <div class="content-box">
+                        <p class="content-text">${scenario.commonReaction}</p>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-head">
+                        <span class="section-icon">🧘</span>
+                        <span class="section-name">Sthithpragya Response</span>
+                    </div>
+                    <div class="content-box">
+                        <p class="content-text">${scenario.sthithpragyaResponse}</p>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-head">
+                        <span class="section-icon">📖</span>
+                        <span class="section-name">Bhagavad Gita Wisdom</span>
+                    </div>
+                    <div class="gita-quote-box">
+                        <p class="quote-text">${scenario.gitaVerse}</p>
+                        <div class="quote-reference">— ${scenario.gitaReference}</div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-head">
+                        <span class="section-icon">✅</span>
+                        <span class="section-name">Practical Steps</span>
+                    </div>
+                    <div class="steps-box">
+                        ${scenario.steps.map((step, i) => `
+                            <div class="step-item">
+                                <span class="step-num">${i + 1}</span>
+                                <span class="step-text">${step}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            content.scrollTop = 0;
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                
+                if (!query) {
+                    renderCategories();
+                    return;
+                }
+                
+                const grid = document.getElementById('categoriesGrid');
+                grid.innerHTML = '';
+                
+                let foundAny = false;
+                
+                Object.keys(SCENARIOS_DATA).forEach(categoryName => {
+                    const category = SCENARIOS_DATA[categoryName];
+                    const matchingScenarios = category.scenarios.filter(s => 
+                        s.situation.toLowerCase().includes(query) ||
+                        s.commonReaction.toLowerCase().includes(query) ||
+                        s.sthithpragyaResponse.toLowerCase().includes(query)
+                    );
+                    
+                    if (matchingScenarios.length > 0) {
+                        foundAny = true;
+                        matchingScenarios.forEach((scenario, index) => {
+                            const card = document.createElement('div');
+                            card.className = 'scenario-card-item';
+                            card.style.gridColumn = 'span 2';
+                            card.onclick = () => {
+                                const originalIndex = category.scenarios.indexOf(scenario);
+                                showScenario(categoryName, originalIndex);
+                            };
+                            card.innerHTML = `
+                                <span class="scenario-number-badge">${categoryName}</span>
+                                <h3 class="scenario-card-title">${scenario.situation}</h3>
+                                <p class="scenario-card-preview">${scenario.sthithpragyaResponse.substring(0, 100)}...</p>
+                            `;
+                            grid.appendChild(card);
+                        });
+                    }
+                });
+                
+                if (!foundAny) {
+                    grid.innerHTML = `
+                        <div class="no-results" style="grid-column: span 2;">
+                            <div class="no-results-emoji">🔍</div>
+                            <div class="no-results-text">No scenarios found</div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Count total scenarios
+        let totalScenarios = 0;
+        Object.keys(SCENARIOS_DATA).forEach(cat => {
+            totalScenarios += SCENARIOS_DATA[cat].scenarios.length;
+        });
+        console.log(`Total scenarios: ${totalScenarios}`);
+    </script>
+</body>
+</html>
