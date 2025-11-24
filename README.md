@@ -2,7 +2,7 @@
 
 > Ancient wisdom from the Bhagavad Gita applied to modern life challenges
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://gaurav16arora.github.io/sthithpragya/)
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://gaurav16arora.github.io/sthithpragya/index.html)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 📖 About
