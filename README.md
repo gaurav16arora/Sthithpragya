@@ -1,0 +1,2 @@
+# Sthithpragya
+Sthithpragya Wisdom App
